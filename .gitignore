@@ -1,0 +1,7 @@
+.env
+.venv/
+.idea/
+__pycache__/
+*.pyc
+_cache_geo/
+logs/
