@@ -5,3 +5,8 @@ __pycache__/
 *.pyc
 _cache_geo/
 logs/
+
+# Artefatti della build del pacchetto (build_pacchetto.bat)
+build/
+dist/
+*.spec

@@ -1,0 +1,75 @@
+REVERSE GEOCODING COORDINATE -> Via, Civico, Comune, Provincia
+================================================================================
+
+A COSA SERVE
+  Legge un file Excel che contiene due colonne con latitudine e longitudine e
+  crea una copia del file con quattro colonne in piu': Via, Civico, Comune,
+  Provincia, ricavate da OpenStreetMap/Nominatim.
+
+FORMATI ACCETTATI
+  In ingresso vanno bene sia i file moderni .xlsx (e .xlsm) sia i vecchi .xls di
+  Excel 97-2003. Il formato viene riconosciuto dal contenuto del file e non
+  dall'estensione, quindi funzionano anche le esportazioni dei gestionali che
+  chiamano .xls un file in realta' xlsx.
+  Il file prodotto e' sempre in formato .xlsx (si apre con qualsiasi Excel
+  recente), anche quando l'originale e' un .xls.
+
+COME SI USA
+  1. Doppio clic su Avvia_Geocoding.bat
+  2. Alla richiesta, incolla il percorso della cartella che contiene il file
+     (es. C:\dati\rilevazioni) e poi il nome del file (es. mezzi.xlsx).
+     Si puo' anche incollare direttamente il percorso completo del file.
+  3. Il programma crea nella STESSA cartella un nuovo file con lo stesso nome
+     piu' il suffisso _ELABORATO:
+         mezzi.xlsx  ->  mezzi_ELABORATO.xlsx
+         mezzi.xls   ->  mezzi_ELABORATO.xlsx
+     Il file originale non viene modificato.
+
+  In alternativa si puo' trascinare il file Excel sopra Avvia_Geocoding.bat.
+
+FOGLI (SHEET) DEL FILE
+  Il programma esamina TUTTI i fogli del file, non solo il primo:
+  - ogni foglio che contiene le due colonne delle coordinate viene elaborato e
+    riceve le quattro colonne nuove;
+  - i fogli senza coordinate (anagrafiche, note, fogli vuoti) vengono ricopiati
+    invariati, quindi il file di output ha gli stessi fogli dell'originale,
+    nello stesso ordine.
+  Le colonne possono avere nomi diversi in fogli diversi (per esempio "Lat" in
+  uno e "Latitude" in un altro): ogni foglio viene riconosciuto per conto suo.
+  Una coordinata che compare in piu' fogli viene cercata una volta sola.
+
+COLONNE DELLE COORDINATE
+  Vengono riconosciute automaticamente le intestazioni Lat/Latitude e
+  Lon/Long/Longitude (spazi e maiuscole non contano). Se in nessun foglio
+  compaiono questi nomi, il programma elenca i fogli e le loro colonne e chiede
+  quale foglio elaborare e quali colonne usare.
+
+QUANTO TEMPO CI VUOLE
+  Il servizio pubblico Nominatim ammette 1 sola richiesta al secondo: e' un
+  limite loro, non del programma. Quindi circa 1 secondo per ogni coordinata
+  DIVERSA (le coordinate ripetute non vengono ricercate due volte).
+  Esempio: 3.000 coordinate diverse = circa 55 minuti.
+
+  Le coordinate gia' risolte vengono salvate nella cartella _cache_geo accanto
+  al programma: le esecuzioni successive, anche su file diversi, riusano quei
+  risultati e sono molto piu' rapide.
+
+SI PUO' INTERROMPERE
+  Con CTRL+C il lavoro svolto fino a quel momento viene salvato. Rilanciando, il
+  programma riprende dalle coordinate mancanti.
+
+SE QUALCOSA NON FUNZIONA
+  - "Impossibile scrivere ..." -> il file _ELABORATO e' aperto in Excel: chiudilo.
+  - "non e' un file Excel" -> il file e' una tabella HTML o un CSV con estensione
+    .xls (capita con alcune esportazioni): aprilo in Excel e risalvalo come .xlsx.
+  - Molti errori di rete -> serve l'accesso a internet verso
+    nominatim.openstreetmap.org (in azienda potrebbe essere bloccato dal proxy).
+  - Il file di output ha delle righe senza indirizzo -> quelle coordinate non
+    sono state risolte; rilanciare il programma riprova solo quelle.
+
+NOTE TECNICHE
+  Non serve Python installato: l'interprete e tutte le librerie sono dentro la
+  cartella del pacchetto. Va copiata per intero, non solo il .exe.
+  La cartella della cache si puo' spostare impostando la variabile d'ambiente
+  GEO_CACHE_DIR; i thread di lavoro con GEO_WORKERS (default 4, non aumentano le
+  richieste al secondo, che restano limitate dal servizio).

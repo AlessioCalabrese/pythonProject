@@ -1,3 +1,9 @@
 fastapi>=0.141
 uvicorn[standard]>=0.53
 python-dotenv>=1.2
+
+# FindIndirizzoByCoordinate.py (reverse geocoding)
+pandas>=2.2
+geopy>=2.4
+openpyxl>=3.1        # lettura/scrittura .xlsx e .xlsm
+xlrd>=2.0            # lettura dei vecchi .xls (Excel 97-2003)
